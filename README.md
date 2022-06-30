@@ -32,10 +32,15 @@ Adding a cache server between express app and mongodb. When a query is issued fo
 - The cache server only handles read request, not write
 - We use `node-redis` library to interact with redis
 - Use brew to install redis on Mac
-- key should be consistent and unique, user A get his blogs, user B doesn't get A's blogs
+- key should be **consistent** and **unique**, user A get his blogs, user B doesn't get A's blogs
   - `{ _user: req.user.id }` is unique for each user
   - the mongo query is issued to blog collection, which should be part of key
-  - this tutorial only has one collection, so can omit collection
+  - use `query.getOptions` to get a unique & consistent JSON repr of the query to use as key
+- clean code: refactor redis-related code into the `exec` function
+- cache update policy:
+- cache eviction policy: simple way is auto timeout with time-to-live
+  - example `client.set('color', 'red', 'EX', 5)` with 5 second expiry
+- future-proof policy: carefully craft the cache key, include mongo collection into key
 
 ```bash
 which brew
@@ -79,3 +84,16 @@ const data = { capital: 'sacramento' };
 client.set('ca', JSON.stringify(data));
 client.get('ca', (err, val) => console.log(JSON.parse(val)));
 ```
+
+### Deeper into Mongo
+
+Three ways to trigger a mongo query
+
+1. async-await (simplest): `const result = await query`
+2. trigger promise: `query.then(result => {})`
+3. define query, then do `query.exec((err, result) => {})`: _we can override the exec to embed the cache logic_
+
+### Prototypal Inheritance of Javascript
+
+- a function is declared `function Query()` and instantiated `new Query()`
+- add method to prototype `Query.prototype.exec = function ( ... ) { ... }`, then instance can do `query.exec`
