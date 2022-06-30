@@ -47,9 +47,6 @@ mongoose.Query.prototype.exec = async function () {
       // looking up a single object (e.g. user)
       return new this.model(doc);
     }
-
-    // exec returns a promise<mongoose document)
-    return doc;
   }
 
   // issue query and store result
