@@ -9,8 +9,18 @@ client.get = util.promisify(client.get);
 // get a ref of the existing exec function and overwrite it
 const exec = mongoose.Query.prototype.exec;
 
+// declare a new method to all query instances, simply appends a bool flag
+mongoose.Query.prototype.cache = async function () {
+  this._cache = true;
+  return this; // builder pattern, makes it chainable
+};
+
 // don't use arrow func so `this` is preserved, referencing the Query
 mongoose.Query.prototype.exec = async function () {
+  if (!this._cache) {
+    return await exec.apply(this, arguments);
+  }
+
   console.log('\n----------custom logic in exec----------');
 
   // query is a ref, do not directly modify it
