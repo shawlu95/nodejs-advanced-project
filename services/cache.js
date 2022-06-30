@@ -57,7 +57,8 @@ mongoose.Query.prototype.exec = async function () {
   const res = await exec.apply(this, arguments);
 
   // res is a mongoose document that looks like a JSON
-  client.set(key, JSON.stringify(res));
+  // expire cache in 100 seconds, apply to future docs (not retroactive)
+  client.set(key, JSON.stringify(res), 'EX', 100);
 
   console.log('retrieved from mongo:', res);
   // exec returns a promise<mongoose document)
