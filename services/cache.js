@@ -66,3 +66,10 @@ mongoose.Query.prototype.exec = async function () {
   // exec returns a promise<mongoose document)
   return res;
 };
+
+module.exports = {
+  invalidateCache(hashKey) {
+    console.log('invalidated cache:', hashKey);
+    client.del(JSON.stringify(hashKey));
+  },
+};

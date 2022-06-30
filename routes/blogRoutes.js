@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
 
 const Blog = mongoose.model('Blog');
+const { invalidateCache } = require('../services/cache');
 
 module.exports = (app) => {
   app.get('/api/blogs/:id', requireLogin, async (req, res) => {
@@ -28,6 +29,8 @@ module.exports = (app) => {
       content,
       _user: req.user.id,
     });
+
+    invalidateCache(req.user.id);
 
     try {
       await blog.save();
