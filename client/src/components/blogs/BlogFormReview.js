@@ -26,14 +26,14 @@ class BlogFormReview extends Component {
     return (
       <div>
         <button
-          className="yellow darken-3 white-text btn-flat"
+          className='yellow darken-3 white-text btn-flat'
           onClick={onCancel}
         >
           Back
         </button>
-        <button className="green btn-flat right white-text">
+        <button className='green btn-flat right white-text'>
           Save Blog
-          <i className="material-icons right">email</i>
+          <i className='material-icons right'>email</i>
         </button>
       </div>
     );
