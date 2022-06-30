@@ -4,14 +4,19 @@ const util = require('util');
 
 const url = 'redis://127.0.0.1:6379';
 const client = redis.createClient(url);
-client.get = util.promisify(client.get);
+client.hget = util.promisify(client.hget);
 
 // get a ref of the existing exec function and overwrite it
 const exec = mongoose.Query.prototype.exec;
 
 // declare a new method to all query instances, simply appends a bool flag
-mongoose.Query.prototype.cache = async function () {
+mongoose.Query.prototype.cache = async function (options = {}) {
   this._cache = true;
+
+  // key must be a number or string
+  // use empty string instead of undefined when no key is passed
+  this._hashKey = JSON.stringify(options.key || '');
+
   return this; // builder pattern, makes it chainable
 };
 
@@ -35,7 +40,7 @@ mongoose.Query.prototype.exec = async function () {
   console.log('unique and consistent key:', key);
 
   // return cached value if exists
-  const cached = await client.get(key);
+  const cached = await client.hget(this._hashKey, key);
   if (cached) {
     const doc = JSON.parse(cached);
     console.log('retrieved from cache:', doc);
@@ -55,7 +60,7 @@ mongoose.Query.prototype.exec = async function () {
 
   // res is a mongoose document that looks like a JSON
   // expire cache in 100 seconds, apply to future docs (not retroactive)
-  client.set(key, JSON.stringify(res), 'EX', 100);
+  client.hset(this._hashKey, key, JSON.stringify(res), 'EX', 100);
 
   console.log('retrieved from mongo:', res);
   // exec returns a promise<mongoose document)
