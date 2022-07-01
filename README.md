@@ -121,6 +121,9 @@ Three ways to trigger a mongo query
   3. click on elements on page
   4. use DOM selector to retrieve element
   5. assert
+- **describe** statement groups logically similar tests
+  - it can contain child-level describe group
+  - it can have its own beforeEach and afterEach
 
 ```bash
 brew install chromium

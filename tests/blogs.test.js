@@ -11,10 +11,14 @@ afterEach(async () => {
   await page.close();
 });
 
-it('displays blog-create form after logging in', async () => {
-  await page.login('http://localhost:3000/blogs');
-  await page.click('a.btn-large');
+describe('when logged in', async () => {
+  beforeEach(async () => {
+    await page.login('http://localhost:3000/blogs');
+    await page.click('a.btn-large');
+  });
 
-  const label = await page.getContentsOf('form label');
-  expect(label).toEqual('Blog Title');
+  it('displays blog-create form after logging in', async () => {
+    const label = await page.getContentsOf('form label');
+    expect(label).toEqual('Blog Title');
+  });
 });
