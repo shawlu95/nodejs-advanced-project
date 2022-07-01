@@ -101,7 +101,7 @@ Three ways to trigger a mongo query
 ### Unit & Integration Tests
 
 - this project prefers integration tests involving multiple units
-- use jest and puppeteer for testing
+- use jest and [puppeteer](https://github.com/puppeteer/puppeteer) for testing
   - puppeteer starts up chromium, returns a browser with pages (tabs)
   - headless mode doesn't spin up browser UI so it's faster
   - jest will find all test files ending in `.test.js`
@@ -137,6 +137,7 @@ Sample cookie after login
 - middleware 1: cookie-session lib uses `session.sig` ensures `session` is not tampered, and decodes session into json object and assigns to `req.session`
 - middleware 2: the `req.session` is forwarded to passport `deserializeUser`, which either pulls the user `req.session.passport.user` and set it to `req.user`
 - request is authenticated, and forwarded to next middleware/route handler
+- a **cookie key** is used to sign cookie session to generate cookie.sig so it can't be forged or doctored, this value is set in `.env` and never shared.
 
 ```
 Cookie: connect.sid=s%3Al7EJu5QOyl6sqCfgpuov13crqx6jEEQE.8nJ8fCKc%2Bwt2YKPC6IMKt1fub%2FSev3mPNoTotkSo2kA; session=eyJwYXNzcG9ydCI6eyJ1c2VyIjoiNjJiYmU0NDljNTg4OWZkODdjZGE5YjJmIn19; session.sig=pvrwZNR9n6f5x-rhEcDkpQgpxME
@@ -151,4 +152,21 @@ undefined
 undefined
 > Buffer.from(session, 'base64').toString('utf8')
 '{"passport":{"user":"62bbe449c5889fd87cda9b2f"}}'
+```
+
+### Cookie Security
+
+- this value is set in `.env` and never shared.
+- a **cookie key** is used to sign cookie session to generate `cookie.sig`.
+- the key is used to verify cookie session: decoded session + session sig + **cookie key** => `true`.
+
+```javascript
+const Keygrip = require('keygrip');
+const keygrip = new Keygrip(['123123123']);
+const session =
+  'eyJwYXNzcG9ydCI6eyJ1c2VyIjoiNjJiYmU0NDljNTg4OWZkODdjZGE5YjJmIn19';
+const sig = keygrip.sign('session=' + session);
+
+// returns true if session hasn't been tampered with
+keygrip.verify('session=' + session, sig);
 ```
