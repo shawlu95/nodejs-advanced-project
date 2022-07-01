@@ -185,6 +185,15 @@ const sig = keygrip.sign('session=' + session);
 keygrip.verify('session=' + session, sig);
 ```
 
+---
+
+### Proxy
+
+- a method of combining multiple objects into one, without inheritance
+- objects can be completely heterogenous (don't even have to be similar)
+- we use Proxy to cleanup the interface to interact with Puppeteer page, custom page, and browser object.
+- there's priority queue, so the order of `||` chain matters (e.g. `close` exists on page and browser objects)
+
 ### Troubleshooting
 
 Chromium revision is not downloaded. Run "npm install" or "yarn install". Found solution for mac [here](https://rickynguyen.medium.com/puppeteer-for-apple-m1-43a5c31e4f9d)

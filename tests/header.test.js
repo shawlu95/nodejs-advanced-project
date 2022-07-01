@@ -1,18 +1,17 @@
 const puppeteer = require('puppeteer');
 const getSession = require('./factories/session');
 const getUser = require('./factories/user');
+const Page = require('./helpers/page');
 
-let browser, page;
+let page;
 
 beforeEach(async () => {
-  // don't forget the empty object, we can add options to it
-  browser = await puppeteer.launch({ headless: true });
-  page = await browser.newPage();
+  page = await Page.build();
   await page.goto('http://localhost:3000');
 });
 
 afterEach(async () => {
-  await browser.close();
+  await page.close();
 });
 
 it('launches a new browser instance', async () => {
