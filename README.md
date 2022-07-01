@@ -170,3 +170,18 @@ const sig = keygrip.sign('session=' + session);
 // returns true if session hasn't been tampered with
 keygrip.verify('session=' + session, sig);
 ```
+
+### Troubleshooting
+
+Chromium revision is not downloaded. Run "npm install" or "yarn install". Found solution for mac [here](https://rickynguyen.medium.com/puppeteer-for-apple-m1-43a5c31e4f9d)
+
+```bash
+# solution 1
+node node_modules/puppeteer/install.js
+
+# solution 2: edit ~/.zshrc
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+export PUPPETEER_EXECUTABLE_PATH=`which chromium`
+
+source ~/.zshrc
+```
