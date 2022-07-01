@@ -115,3 +115,40 @@ Three ways to trigger a mongo query
 ```bash
 brew install chromium
 ```
+
+### Continuous Integration
+
+Automated tests would continuous hit Google OAuth and trigger captcha. How to resolve:
+
+1. make a secret routes to automatically login, not the best way to go (don't change code base to suit test)
+2. don't require auth when running test (don't change code base to suit test)
+3. **preferred**: fake a session to store in `req`
+4. create a service account with google for testing (not a generic OAuth solution)
+
+OAuth workflow
+
+1. user calls google oauth `/auth/google`
+2. google respond with login success and call `/auth/google/callback?code=...` with a auth code (first round trip)
+3. app asks for more info about user (with auth code), google respond with user profile (second round trip)
+4. app sets cookie and sends to browser, to be included in future requests (auto-tests trick this step!)
+
+Sample cookie after login
+
+- middleware 1: cookie-session lib uses `session.sig` ensures `session` is not tampered, and decodes session into json object and assigns to `req.session`
+- middleware 2: the `req.session` is forwarded to passport `deserializeUser`, which either pulls the user `req.session.passport.user` and set it to `req.user`
+- request is authenticated, and forwarded to next middleware/route handler
+
+```
+Cookie: connect.sid=s%3Al7EJu5QOyl6sqCfgpuov13crqx6jEEQE.8nJ8fCKc%2Bwt2YKPC6IMKt1fub%2FSev3mPNoTotkSo2kA; session=eyJwYXNzcG9ydCI6eyJ1c2VyIjoiNjJiYmU0NDljNTg4OWZkODdjZGE5YjJmIn19; session.sig=pvrwZNR9n6f5x-rhEcDkpQgpxME
+```
+
+Decode the base64 cookie
+
+```javascript
+> const session='eyJwYXNzcG9ydCI6eyJ1c2VyIjoiNjJiYmU0NDljNTg4OWZkODdjZGE5YjJmIn19'
+undefined
+> const Buffer = require('safe-buffer').Buffer;
+undefined
+> Buffer.from(session, 'base64').toString('utf8')
+'{"passport":{"user":"62bbe449c5889fd87cda9b2f"}}'
+```

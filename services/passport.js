@@ -5,10 +5,21 @@ const keys = require('../config/keys');
 
 const User = mongoose.model('User');
 
+/**
+ * Before sending request to OAuth provider, the property
+ * (user.id in this case) is set to a template json:
+ * {"passport":{"user":"$PROPERTY"}}
+ */
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
+/**
+ * Handle session received from OAuth provider
+ * @param id directly comes from session (decoded)
+ * The path of this id thing is req.session.passport.user
+ * The retrieved user is assigned to req.user
+ */
 passport.deserializeUser((id, done) => {
   User.findById(id).then((user) => {
     done(null, user);
