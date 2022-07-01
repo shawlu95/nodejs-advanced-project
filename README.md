@@ -25,7 +25,9 @@ npm run dev
 - `GET /api/blogs`: get all blogs of logged-in user
 - `POST /api/blogs`: create new blog
 
-### Learning Experience
+---
+
+### Redis Cache
 
 Adding a cache server between express app and mongodb. When a query is issued for the first time, the results are stored in the cache server (key-value store). If the same query is requested, the cached result is sent back, without touching the mongodb server.
 
@@ -70,6 +72,8 @@ const foo = await client.get('foo');
 client.flushall();
 ```
 
+---
+
 ### Nested Hash
 
 - store a hierarchy pf key-value pair
@@ -85,6 +89,8 @@ client.set('ca', JSON.stringify(data));
 client.get('ca', (err, val) => console.log(JSON.parse(val)));
 ```
 
+---
+
 ### Deeper into Mongo
 
 Three ways to trigger a mongo query
@@ -93,10 +99,14 @@ Three ways to trigger a mongo query
 2. trigger promise: `query.then(result => {})`
 3. define query, then do `query.exec((err, result) => {})`: _we can override the exec to embed the cache logic_
 
+---
+
 ### Prototypal Inheritance of Javascript
 
 - a function is declared `function Query()` and instantiated `new Query()`
 - add method to prototype `Query.prototype.exec = function ( ... ) { ... }`, then instance can do `query.exec`
+
+---
 
 ### Unit & Integration Tests
 
@@ -115,6 +125,8 @@ Three ways to trigger a mongo query
 ```bash
 brew install chromium
 ```
+
+---
 
 ### Continuous Integration
 
@@ -153,6 +165,8 @@ undefined
 > Buffer.from(session, 'base64').toString('utf8')
 '{"passport":{"user":"62bbe449c5889fd87cda9b2f"}}'
 ```
+
+---
 
 ### Cookie Security
 
