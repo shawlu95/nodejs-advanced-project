@@ -97,3 +97,21 @@ Three ways to trigger a mongo query
 
 - a function is declared `function Query()` and instantiated `new Query()`
 - add method to prototype `Query.prototype.exec = function ( ... ) { ... }`, then instance can do `query.exec`
+
+### Unit & Integration Tests
+
+- this project prefers integration tests involving multiple units
+- use jest and puppeteer for testing
+  - puppeteer starts up chromium, returns a browser with pages (tabs)
+  - headless mode doesn't spin up browser UI so it's faster
+  - jest will find all test files ending in `.test.js`
+- general workflow of testing UI
+  1. launch chromium
+  2. navigate to app
+  3. click on elements on page
+  4. use DOM selector to retrieve element
+  5. assert
+
+```bash
+brew install chromium
+```
