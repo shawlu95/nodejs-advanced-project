@@ -4,6 +4,9 @@
  * which executes the mongoose model files
  */
 
+// increase if machine is slow
+jest.setTimeout(10000);
+
 const { TextEncoder, TextDecoder } = require('util');
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
