@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer');
+const getSession = require('./factories/session');
+const getUser = require('./factories/user');
 
 let browser, page;
 
@@ -34,32 +36,16 @@ it('clicks login with google', async () => {
 
 it('shows logout button after signing in', async () => {
   // my mongo id (google OAuth authenticated)
-  const id = '62bbe449c5889fd87cda9b2f';
-
-  const Buffer = require('safe-buffer').Buffer;
-
-  // serialize user as in passport.js
-  const sessionObject = {
-    passport: {
-      user: id,
-    },
-  };
-
-  const sessionString = Buffer.from(JSON.stringify(sessionObject)).toString(
-    'base64'
-  );
-
-  const Keygrip = require('keygrip');
-
-  // process.env.NODE_ENV=='test'
-  const keys = require('../config/keys');
-
-  const keygrip = new Keygrip([keys.cookieKey]);
-  const sig = keygrip.sign('session=' + sessionString);
+  const _id = '62bbe449c5889fd87cda9b2f';
+  const user = await getUser({ _id });
+  const { session, sig } = getSession(user);
 
   // check Chrome, inspect Application => Cookies to see the expected names
-  await page.setCookie({ name: 'session', value: sessionString });
+  await page.setCookie({ name: 'session', value: session });
   await page.setCookie({ name: 'session.sig', value: sig });
+
+  // check cookie if curious
+  // console.log(await page.cookies());
 
   // refresh page, simulate logging into application
   await page.goto('http://localhost:3000');
@@ -71,5 +57,4 @@ it('shows logout button after signing in', async () => {
   // pull the element by href property
   // can try it out in chrome console: $('a[href="/auth/logout"')
   const text = await page.$eval('a[href="/auth/logout"]', (el) => el.innerHTML);
-  console.log(text);
 });
