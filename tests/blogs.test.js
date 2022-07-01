@@ -34,4 +34,31 @@ describe('when logged in', async () => {
       expect(contentError).toEqual('You must provide a value');
     });
   });
+
+  describe('using valid blog input', async () => {
+    beforeEach(async () => {
+      await page.type('.title input', 'Test Blog Title');
+      await page.type('.content input', 'Test Blog Content');
+      await page.click('form button');
+    });
+
+    it('takes user to review screen', async () => {
+      const text = await page.getContentsOf('h5');
+      expect(text).toEqual('Please confirm your entries');
+    });
+
+    it.skip('takes user to review screen and submits', async () => {
+      await page.click('button.green');
+
+      // need to wait for action to be completed (use any element from the result page)
+      // then check the existance of new blog, first one because user is new
+      await page.waitFor('.card');
+
+      const title = await page.getContentsOf('.card-title');
+      const content = await page.getContentsOf('p');
+
+      expect(title).toEqual('Test Blog Title');
+      expect(content).toEqual('Test Blog Content');
+    });
+  });
 });
