@@ -12,13 +12,7 @@ afterEach(async () => {
 });
 
 it('launches a new browser instance', async () => {
-  // puppeteer serialize the code into str and communicate it to browser
-  // const func = (el) => el.innerHTML
-  // func.toString() returns "(el) => el.innerHTML"
-  // dollar sign is part of func name, nothing special about it
-  const text = await page.$eval('a.brand-logo', (el) => el.innerHTML);
-
-  // returned is also a str
+  const text = await page.getContentsOf('a.brand-logo');
   expect(text).toEqual('Blogster');
 });
 
@@ -35,5 +29,6 @@ it('shows logout button after signing in', async () => {
 
   // pull the element by href property
   // can try it out in chrome console: $('a[href="/auth/logout"')
-  const text = await page.$eval('a[href="/auth/logout"]', (el) => el.innerHTML);
+  const text = await page.getContentsOf('a[href="/auth/logout"]');
+  expect(text).toEqual('Logout');
 });

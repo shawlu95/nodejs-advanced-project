@@ -45,6 +45,14 @@ class TestPage {
     // test would fail at this line if not found
     await this.page.waitFor('a[href="/auth/logout"]');
   }
+
+  async getContentsOf(selector) {
+    // puppeteer serialize the code into str and communicate it to browser
+    // const func = (el) => el.innerHTML
+    // func.toString() returns "(el) => el.innerHTML"
+    // dollar sign is part of func name, nothing special about it
+    return this.page.$eval(selector, (el) => el.innerHTML);
+  }
 }
 
 module.exports = TestPage;
