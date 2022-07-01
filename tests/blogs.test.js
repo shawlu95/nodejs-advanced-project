@@ -62,3 +62,32 @@ describe('when logged in', async () => {
     });
   });
 });
+
+describe('when not logged in', async () => {
+  it('cannot create blog', async () => {
+    const result = await page.evaluate(async () => {
+      return fetch('/api/blogs', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: 'Fetch', content: 'My content' }),
+      }).then((res) => res.json());
+    });
+    expect(result.error).toEqual('You must log in!');
+  });
+
+  it('cannot read blogs', async () => {
+    const result = await page.evaluate(async () => {
+      return fetch('/api/blogs', {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((res) => res.json());
+    });
+    expect(result.error).toEqual('You must log in!');
+  });
+});
