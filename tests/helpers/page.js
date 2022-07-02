@@ -53,6 +53,38 @@ class TestPage {
     // dollar sign is part of func name, nothing special about it
     return this.page.$eval(selector, (el) => el.innerHTML);
   }
+
+  /**
+   * page.evaluate turns the function into a string
+   * so param path must be de-referenced, and passes in its value */
+  post(path, body) {
+    return this.page.evaluate(
+      async (_path, _body) => {
+        return fetch(_path, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(_body),
+        }).then((res) => res.json());
+      },
+      path,
+      body // params
+    );
+  }
+
+  get(path) {
+    return this.page.evaluate(async (_path) => {
+      return fetch(_path, {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((res) => res.json());
+    }, path);
+  }
 }
 
 module.exports = TestPage;
