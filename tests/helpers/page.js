@@ -85,6 +85,15 @@ class TestPage {
       }).then((res) => res.json());
     }, path);
   }
+
+  doRequests(actions) {
+    return Promise.all(
+      // array of promises
+      actions.map(({ method, path, data }) => {
+        return this[method](path, data);
+      })
+    );
+  }
 }
 
 module.exports = TestPage;

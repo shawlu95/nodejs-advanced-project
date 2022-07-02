@@ -64,16 +64,27 @@ describe('when logged in', async () => {
 });
 
 describe('when not logged in', async () => {
-  it('cannot create blog', async () => {
-    const result = await page.post('/api/blogs', {
-      title: 'Fetch',
-      content: 'My content',
-    });
-    expect(result.error).toEqual('You must log in!');
-  });
+  // send those actions in the same chromium instance to speed up
+  // the condition is same (user is not logged in)
+  const actions = [
+    {
+      method: 'get',
+      path: '/api/blogs',
+    },
+    {
+      method: 'post',
+      path: '/api/blogs',
+      data: {
+        title: 'T',
+        content: 'C',
+      },
+    },
+  ];
 
-  it('cannot read blogs', async () => {
-    const result = await page.get('/api/blogs');
-    expect(result.error).toEqual('You must log in!');
+  it('rejects all blog-related requests', async () => {
+    const results = await page.doRequests(actions);
+    for (let result of results) {
+      expect(result).toEqual({ error: 'You must log in!' });
+    }
   });
 });
