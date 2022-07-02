@@ -11,7 +11,10 @@ class TestPage {
    * Create a Page, a TestPage, combine them
    * usign a proxy */
   static async build() {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox'], // speed up test in CI server
+    });
     const page = await browser.newPage();
 
     const testPage = new TestPage(page);

@@ -131,7 +131,7 @@ brew install chromium
 
 ---
 
-### Continuous Integration
+### Cookie Testing
 
 Automated tests would continuous hit Google OAuth and trigger captcha. How to resolve:
 
@@ -196,6 +196,25 @@ keygrip.verify('session=' + session, sig);
 - objects can be completely heterogenous (don't even have to be similar)
 - we use Proxy to cleanup the interface to interact with Puppeteer page, custom page, and browser object.
 - there's priority queue, so the order of `||` chain matters (e.g. `close` exists on page and browser objects)
+
+---
+
+### Continuous Integration
+
+- CI server runs automatic tests on codebase to ensure the changes haven't broken anything
+- if all tests pass, CI server marks pull requests green (send notification if needed)
+- variety of tests possible: mocha, lint, unit, integration, UI tests
+- CI server provider: [Travis](https://docs.travis-ci.com/) (in this project), Circle, Codeship, AWS Codebuild (assume AWS codebase)
+  1. push code to github
+  2. Travis detects code push, clones project
+  3. Travis runs tests specified in a `.travis.yml` file
+  4. sent email notification if all tests pass
+- **trusty** is a linux variant often used for running code on VM
+- dev mode starts up two server: 3000 for react, 5000 for nodejs
+- prod/CI mode doesn't use the 3000 react server, react app is 'built' see [package.json](./package.json)
+  - `npm run build` comes with the `create-react-app`, takes everything from `src` and output executable into `build` folder
+
+---
 
 ### Troubleshooting
 
