@@ -222,6 +222,8 @@ keygrip.verify('session=' + session, sig);
 - Uploading file from server costs bandwidth. Get a file-specific URL from S3 and uses AWS CPU to accept upload from browser
   - the URL only works for specific file name, file type, bucket, and can have TTL
   - S3 bucket name must be unique in region (among all aws users)
+- Randomly generate filename to prvent users from uploading duplicate names
+- CORS: disallow any front-end from requesting s3 url from our server
 
 ### Troubleshooting
 

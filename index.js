@@ -26,8 +26,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// a function is exported that takes app as param
+// import the function and immediately invoke it
 require('./routes/authRoutes')(app);
 require('./routes/blogRoutes')(app);
+require('./routes/uploadRoutes')(app);
 
 // in production/ci, serve pre-built react app
 if (['production', 'ci'].includes(process.env.NODE_ENV)) {
