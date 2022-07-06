@@ -4,6 +4,6 @@ module.exports = {
   mongoURI: process.env.MONGO_URI_DEV,
   redisUrl: 'redis://127.0.0.1:6379',
   cookieKey: '123123123',
-  s3KeyId: 'AKIA3ALI6ILBVIY4HSHR',
+  s3KeyId: 'AKIA3ALI6ILB7ZIWSWHF',
   s3Key: process.env.S3_KEY,
 };
