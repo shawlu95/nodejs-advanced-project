@@ -216,6 +216,13 @@ keygrip.verify('session=' + session, sig);
 
 ---
 
+### AWS Simple Storage Service
+
+- Cost is $0.023 per GB per month
+- Uploading file from server costs bandwidth. Get a file-specific URL from S3 and uses AWS CPU to accept upload from browser
+  - the URL only works for specific file name, file type, bucket, and can have TTL
+  - S3 bucket name must be unique in region (among all aws users)
+
 ### Troubleshooting
 
 Chromium revision is not downloaded. Run "npm install" or "yarn install". Found solution for mac [here](https://rickynguyen.medium.com/puppeteer-for-apple-m1-43a5c31e4f9d)
